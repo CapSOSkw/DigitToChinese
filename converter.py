@@ -1,6 +1,7 @@
 import re
 import time
 import multiprocessing as mp
+import argparse
 
 _chineseDigit = {
     'Lower': {
@@ -33,6 +34,7 @@ _unit = ["", '十', '百', '千']
 def reversed_enumerate(l):
     return zip(reversed(range(len(l))), reversed(l))
 
+
 def converter(num: int, lower=True):
     result = ""
 
@@ -59,8 +61,8 @@ def converter(num: int, lower=True):
                 result += '零'
 
         else:
-            ten_billion = num // 100000000
-            result += converter(ten_billion, lower=lower) + '亿'
+            billion = num // 100000000
+            result += converter(billion, lower=lower) + '亿'
             num %= 100000000
             if num < 10:
                 result += '零'
@@ -72,17 +74,54 @@ def converter(num: int, lower=True):
     return result
 
 
+def converter1(args):
+    result = ""
+
+    num = args['number'] or args[0]
+    lower = args['lower'] or args[1]
+
+    if num == 0:
+        return '零'
+
+    while num >= 10:
+        num_length = len(str(num))
+
+        if num_length <= 4:
+            for num_of_digit, u in reversed_enumerate(_unit):
+                quotient = num // 10 ** num_of_digit
+                if quotient == 0:
+                    result += '零'
+                else:
+                    result += f'{_chineseDigit["Lower"][str(quotient)]}{u}' if lower else f'{_chineseDigit["Upper"][str(quotient)]}{u}'
+                    num %= 10 ** num_of_digit
+
+        elif 4 < num_length <= 8:
+            ten_thousand = num // 10000
+            result += converter(ten_thousand, lower=lower) + '万'
+            num %= 10000
+            if num < 10:
+                result += '零'
+
+        else:
+            billion = num // 100000000
+            result += converter(billion, lower=lower) + '亿'
+            num %= 100000000
+            if num < 10:
+                result += '零'
+
+    result += f'{_chineseDigit["Lower"][str(num)]}' if lower else f'{_chineseDigit["Upper"][str(num)]}'
+    result = re.sub(r'(^零+)|(零+$)', "", result)
+    result = re.sub(r'零+', '零', result)
+    print(result)
+    return result
+
+
 if __name__ == '__main__':
-    # t1 = time.time()
-    #
-    # for i in range(9999999):
-    #     converter(i)
-    #
-    # print(time.time() - t1) # 129.48s
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-n', '--number', type=int, default=0)
+    ap.add_argument('-l', '--lower', type=bool, default=True)
 
-    t2 = time.time()
-    with mp.Pool(processes=6) as pool:
-        pool.map(converter, range(9999999))
+    args = vars(ap.parse_args())
 
-    print(time.time() - t2)  # 36 ~ 39s
+    converter1(args)
 
