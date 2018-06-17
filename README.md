@@ -1,8 +1,16 @@
 # DigitToChinese
 Convert number to Chinese characters.
-Support Python 3.6+
 
-## HOW TO USE
+
 ```
-python converter.py -n 12345 -l False
+python3 setup.py install
 ```
+
+```
+from DigitToChinese import converter
+
+number = 1314
+ifLower = False   # Default: True
+chinese = converter(number, ifLower)
+# '壹千叁百壹十肆'
+
