@@ -29,7 +29,8 @@ _chineseDigit = {
         '9': '玖'
     }
 }
-_unit = ["", '十', '百', '千']
+_unitLower = ["", '十', '百', '千']
+_unitUpper = ["", '拾', '佰', '仟']
 
 def reversed_enumerate(l):
     return zip(reversed(range(len(l))), reversed(l))
@@ -45,7 +46,8 @@ def converter(num: int, lower=True):
         num_length = len(str(num))
 
         if num_length <= 4:
-            for num_of_digit, u in reversed_enumerate(_unit):
+            for num_of_digit, u in reversed_enumerate(_unitLower if lower==True else _unitUpper):
+                print(u)
                 quotient = num // 10 ** num_of_digit
                 if quotient == 0:
                     result += '零'
@@ -87,7 +89,7 @@ def converter1(args):
         num_length = len(str(num))
 
         if num_length <= 4:
-            for num_of_digit, u in reversed_enumerate(_unit):
+            for num_of_digit, u in reversed_enumerate(_unitLower if lower==True else _unitUpper):
                 quotient = num // 10 ** num_of_digit
                 if quotient == 0:
                     result += '零'
@@ -117,11 +119,12 @@ def converter1(args):
 
 
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser()
-    ap.add_argument('-n', '--number', type=int, default=0)
-    ap.add_argument('-l', '--lower', type=bool, default=True)
-
-    args = vars(ap.parse_args())
-
-    converter1(args)
+    # ap = argparse.ArgumentParser()
+    # ap.add_argument('-n', '--number', type=int, default=0)
+    # ap.add_argument('-l', '--lower', type=bool, default=True)
+    #
+    # args = vars(ap.parse_args())
+    #
+    # converter1(args)
+    print(converter(1314))
 
