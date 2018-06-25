@@ -36,7 +36,7 @@ def reversed_enumerate(l):
     return zip(reversed(range(len(l))), reversed(l))
 
 
-def converter(num: int, lower=True):
+def converter_int(num, lower=True):
     result = ""
 
     if num == 0:
@@ -47,7 +47,6 @@ def converter(num: int, lower=True):
 
         if num_length <= 4:
             for num_of_digit, u in reversed_enumerate(_unitLower if lower==True else _unitUpper):
-                print(u)
                 quotient = num // 10 ** num_of_digit
                 if quotient == 0:
                     result += '零'
@@ -57,14 +56,14 @@ def converter(num: int, lower=True):
 
         elif 4 < num_length <= 8:
             ten_thousand = num // 10000
-            result += converter(ten_thousand, lower=lower) + '万'
+            result += converter_int(ten_thousand, lower=lower) + '万'
             num %= 10000
             if num < 10:
                 result += '零'
 
         else:
             billion = num // 100000000
-            result += converter(billion, lower=lower) + '亿'
+            result += converter_int(billion, lower=lower) + '亿'
             num %= 100000000
             if num < 10:
                 result += '零'
@@ -74,6 +73,34 @@ def converter(num: int, lower=True):
     result = re.sub(r'零+', '零', result)
 
     return result
+
+
+def converter_decimal(num, lower=True):
+    result = "点" if lower else "點"
+
+    for n in num:
+        result += f'{_chineseDigit["Lower"][n]}' if lower else f'{_chineseDigit["Upper"][n]}'
+
+    return result
+
+
+def converter(num, lower=True):
+
+    if isinstance(num, float):
+        int_num, decimal_num = int(str(num).split('.')[0]), str(num).split('.')[1]
+        int_result = converter_int(int_num, lower)
+        decimal_result = converter_decimal(decimal_num, lower)
+        return int_result + decimal_result
+
+    elif isinstance(num, int):
+        int_num = num
+        return converter_int(int_num, lower)
+
+    else:
+        try:
+            return converter(float(num), lower)
+        except:
+            return converter(int(num), lower)
 
 
 def converter1(args):
@@ -99,14 +126,14 @@ def converter1(args):
 
         elif 4 < num_length <= 8:
             ten_thousand = num // 10000
-            result += converter(ten_thousand, lower=lower) + '万'
+            result += converter1(ten_thousand, lower=lower) + '万'
             num %= 10000
             if num < 10:
                 result += '零'
 
         else:
             billion = num // 100000000
-            result += converter(billion, lower=lower) + '亿'
+            result += converter1(billion, lower=lower) + '亿'
             num %= 100000000
             if num < 10:
                 result += '零'
@@ -126,5 +153,5 @@ if __name__ == '__main__':
     # args = vars(ap.parse_args())
     #
     # converter1(args)
-    print(converter(1314))
+    print(converter(1321.000123))
 
