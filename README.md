@@ -1,16 +1,23 @@
 # DigitToChinese
 Convert number to Chinese characters.
+06/25 Converting float function added.
 
-
-```
-python3 setup.py install
-```
 
 ```
 from DigitToChinese import converter
 
-number = 1314
+numbers = [622, '622', 622.0520, '622.0520']
 ifLower = False   # Default: True
-chinese = converter(number, ifLower)
-# '壹仟叁佰壹拾肆'
+
+for n in numbers:
+    print(converter(nm ifLower))
+
+'''
+陆佰贰拾贰
+陆佰贰拾贰點零
+陆佰贰拾贰點零伍贰
+陆佰贰拾贰點零伍贰
+'''
+
+```
 

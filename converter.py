@@ -153,5 +153,9 @@ if __name__ == '__main__':
     # args = vars(ap.parse_args())
     #
     # converter1(args)
-    print(converter(1321.000123))
+    number = [622, '622', 622.0520, '622.0520']
+    ifLower = False  # Default: True
+
+    for n in number:
+        print(converter(n, False))
 
